@@ -1,0 +1,558 @@
+@charset "utf-8";
+@import "compass";
+
+/*----------------------------------------------------
+
+  reset
+/*====================================================*/
+@include global-reset;
+
+$base-font-size: 14px;
+$base-line-height: $base-font-size * 1.8;
+@include establish-baseline();
+
+$default-font : Verdana, Arial, 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic Pro', 'メイリオ', Meiryo, Osaka, 'ＭＳ Ｐゴシック', 'MS PGothic', sans-serif;
+// $ie6-font : "ＭＳ Ｐゴシック", "MS PGothic", Sans-Serif;
+/*----------------------------------------------------
+
+  common
+====================================================*/
+html {
+  @extend html;
+  // overflow-y: scroll;
+}
+
+body {
+  @extend body;
+  font-family: $default-font;
+  /* for iPhone */
+  -webkit-text-size-adjust: 100%;
+  background: url(../img/line-tool.png) repeat-y 57px 0 #2f2f2f;
+}
+
+input, textarea {
+  font-family: $default-font;
+}
+
+
+/* select color
+----------------------------------------------------*/
+$selection-bg-color : #0af;
+$selection-color : #fff;
+::selection {
+  background: $selection-bg-color;
+  color: $selection-color;
+}
+::-moz-selection {
+  background: $selection-bg-color;
+  color: $selection-color;
+}
+
+/* link
+----------------------------------------------------*/
+a {
+  $color : #0af;
+  color: $color;
+  outline: none;
+  cursor: pointer;
+
+  &:link {
+    color: scale_color( $color, $lightness: 50% );
+  }
+
+  &:visited {
+    color: scale_color( $color, $lightness: 30% );
+  }
+
+  &:hover {
+    color: scale_color( $color, $lightness: 20% );
+    img {
+      @include opacity(0.5);
+    }
+  }
+
+  &:active {
+    color: scale_color( $color, $lightness: 70% );
+  }
+  
+}
+
+/* sprite
+----------------------------------------------------*/
+.sprite {
+  @include inline-block();
+  overflow: hidden;
+  text-indent: 100%;
+  white-space: nowrap;
+  background: url(../img/img-node_de_board.png) no-repeat;
+}
+
+
+
+$canvasWidth: 1200px;
+$canvasHeight: 742px;
+
+/* header
+----------------------------------------------------*/
+header {
+  @include clearfix;
+  padding-bottom: 2px;
+  background: url(../img/line-header.png) repeat-x 0 100% #232323;
+
+  h1 {
+    float: left;
+  }
+
+  .logo {
+    display: block;
+    width: 88px;
+    height: 28px;
+    background-position: 0 0;
+    &:hover {
+      background-position: -88px 0;
+    }
+  }
+}
+
+#menu {
+  float: left;
+  ul {
+    @include clearfix();
+  }
+  li {
+    float: left;
+  }
+  .save {
+    display: block;
+    width: 88px;
+    height: 28px;
+    background-position: 0 -28px;
+    &:hover {
+      background-position: -88px -28px;
+    }
+  }
+}
+
+/* content
+----------------------------------------------------*/
+#content {
+  @include pie-clearfix();
+  width: $canvasWidth + 100;
+}
+
+
+/* tools
+----------------------------------------------------*/
+#tools {
+  float: left;
+  width: 40px;
+  margin: 20px 10px 0 9px;
+  .tool_list {
+    margin-bottom: 7px;
+    padding-bottom: 10px;
+    background: url(../img/line-tool_end.png) repeat-x 0 100%;
+  }
+  .tool_list li {
+    position: relative;
+    margin-bottom: 7px;
+  }
+  .option {
+    // display: none;
+    position: absolute;
+    top: 0;
+    left: 40px;
+    width: 176px;
+    padding: 10px;
+    border: 2px solid #ccc;
+    background: whitesmoke;
+    @include box-shadow(0 0 7px 0 #000);
+  }
+}
+
+@mixin toolList($tool_num){
+  display: block;
+  width: 40px;
+  height: 40px;
+  background-position: 0 -#{56 + 40 * $tool_num}px;
+  &:hover {
+    background-position: -40px -#{56 + 40 * $tool_num}px;
+  }
+}
+
+@mixin currentPosition($tool_num) {
+  background-position: -80px -#{56 + 40 * $tool_num}px;
+}
+
+
+// ----------------------------------------
+// brush
+#brush {
+  .sprite {
+    @include toolList(0);
+  }
+  &.current {
+    .sprite {
+      @include currentPosition(0);
+    }
+  }
+  .option {
+    text-align: center;
+  }
+}
+
+.option_num {
+  text-align: center;
+}
+
+
+
+// ----------------------------------------
+// txt
+#txt {
+  .sprite {
+    @include toolList(1);
+  }
+  &.current {
+    .sprite {
+      @include currentPosition(1);
+    }
+  }
+}
+
+// ----------------------------------------
+// eraser
+#eraser {
+  .sprite {
+    @include toolList(2);
+  }
+  &.current {
+    .sprite {
+      @include currentPosition(2);
+    }
+  }
+  .option {
+    text-align: center;
+  }
+}
+
+#brush_width,
+#eraser_width {
+  font-weight: bold;
+}
+
+
+/* main_field
+----------------------------------------------------*/
+
+#main_field {
+  float: right;
+  width: $canvasWidth;
+  padding: 20px;
+
+  .social_wrap {
+    @include clearfix();
+
+    .fb_like,
+    .tweet_btn {
+      float: left;
+    }
+  }
+}
+
+#canvas_wrap {
+  position: relative;
+  width: $canvasWidth;
+  height: $canvasHeight;
+
+  .inline_txt {
+    position: absolute;
+    border: 2px dashed #ccc;
+    background: #f0f0f0;
+    outline: none;
+
+    &:focus {
+      @include box-shadow(0 0 7px #999);
+      border: 2px dashed #98d1ef;
+      background: #fff;
+    }
+  }
+
+  .send_txt,
+  .send_cancel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0 7px;
+    font-size: 12px;
+    color: #fff;
+    cursor: pointer;
+    border: 1px solid #2e70ca;
+    background: #4288e8;
+    line-height: 1.8;
+    @include border-radius(3px);
+    -webkit-transition: all 0.15s linear;
+       -moz-transition: all 0.15s linear;
+        -ms-transition: all 0.15s linear;
+         -o-transition: all 0.15s linear;
+            transition: all 0.15s linear;
+    &:hover {
+      border: 1px solid #006be3;
+      background: #0078ff;
+      @include box-shadow(0 0 7px #999);
+    }
+  }
+
+  .send_cancel {
+    border: 1px solid #8d8989;
+    background: #aea9a9;
+
+    &:hover {
+      border: 1px solid #7c7777;
+      background: #9c9494;
+    }
+  }
+
+}
+
+#board,
+#extent,
+#name_field,
+#txt_field,
+#hit_area {
+  overflow: hidden;
+  position: absolute;
+  width: $canvasWidth;
+  height: $canvasHeight;
+  top: 0;
+  left: 0;
+  // cursor: crosshair !important;
+}
+
+
+
+
+
+
+#board {
+  background: #fff;
+}
+
+#color_pallet {
+  position: relative;
+  width: 39px;
+  font-size: 10px;
+  color: #ccc;
+  text-align: center;
+
+  .option {
+    top: 25px;
+    left: 38px;
+    width: 192px;
+  }
+}
+#current_color {
+  display: block;
+  width: 39px;
+  height: 39px;
+  background: {
+    position: -137px -56px;
+    color: #000;
+  }
+}
+
+#name_field {
+  @extend #name_field;
+  .name_tip {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border: 1px solid #ccc;
+    @include border-radius(4px);
+    padding: 3px;
+    background: rgba(200, 200, 200, 0.7);
+    font-size: 10px;
+    text-align: center;
+    white-space: nowrap;
+    line-height: 1;
+  }
+}
+
+
+// ==========================================================
+// overlay
+// 
+#overlay {
+  // display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 100;
+}
+
+
+// ==========================================================
+// login
+// 
+#login {
+  // display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  overflow: hidden;
+  width: 350px;
+  padding: 20px 10px;
+  @include border-radius(10px);
+  border: 10px solid rgba(0, 0, 0, 0.6);
+  background: #fff;
+  z-index: 100;
+  margin: -100px 0 0 #{-(350 + 10 + 10) / 2}px;
+
+}
+
+#input_name {
+  img {
+    vertical-align: middle;
+  }
+  .name_available {
+    @include inline-block;
+    overflow: hidden;
+    width: 24px;
+    height: 24px;
+    vertical-align: top;
+    margin-top: 6px;
+    background: url(../img/img-name_check.png) no-repeat 0 0;
+  }
+
+  .notice {
+    color: #aaa;
+    font-size: 84%;
+  }
+  .available {
+    background-position: -24px 0;
+  }
+}
+
+#artist_name {
+  overflow: hidden;
+  width: #{310 - 14 - 8}px;
+  border: 2px solid #ccc;
+  padding: 3px 7px;
+  @include border-radius(5px);
+  outline: none;
+  color: #aaa;
+  font-size: 124%;
+  background: #f5f5f5;
+  @include transition(all 0.15s linear);
+
+  &:focus {
+    background: #fff;
+    color: #707070;
+    border-color: #3a97de;
+    @include box-shadow(0 0 7px #999);
+  }
+}
+
+#deside_name {
+  display: block;
+  width: 60px;
+  height: 25px;
+  margin: 15px auto 0;
+  text-align: center;
+  border: 1px solid #2e70ca;
+  @include border-radius(3px);
+  background: #4288e8;
+  color: #fff;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 25px;
+  @include transition(all 0.15s linear);
+
+  &:hover {
+    border: 1px solid #006be3;
+    background: #0078ff;
+    @include box-shadow(0 0 7px #999);
+  }
+
+  &.disabled {
+    background: #ccc;
+    border: 1px solid #aaa;
+    @include box-shadow(none);
+  }
+}
+
+
+#chat {
+  position: fixed;
+  right: 20px;
+  bottom: 0;
+  width: 225px;
+  line-height: 1.4;
+  @include box-shadow(0 0 3px #0a0a0a);
+  border: 1px solid #404040;
+
+  .chat_header {
+    padding: 7px 15px;
+    background: #404040;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  .chat_content {
+    background: #efefef;
+    padding: 0 0 7px 0;
+  }
+
+  &.blur {
+    &.get_message {
+      .chat_header {
+        background: #186e96;
+      }
+    }
+    .chat_content {
+      display: none;
+    }
+  }
+
+  .chat_block {
+    margin-bottom: 0.1em;
+  }
+
+  .chat_txt {
+    display: block;
+    width: 207px;
+    height: 5em;
+    margin: 0 auto;
+    border: 1px solid #ccc;
+    outline: none;
+    resize: none;
+    @include transition(all 0.15s linear);
+
+    &:focus {
+      border: 1px solid #006be3;
+      @include box-shadow(0 0 7px #999);
+    }
+  }
+
+  .comment_box {
+    width: 218px;
+    max-height: 200px;
+    overflow-y: scroll;
+    margin: 0 auto;
+    padding: 0 0 1em 7px;
+    white-space: normal;
+    word-wrap: break-word;
+  }
+
+  .name {
+    font-weight: bold;
+  }
+}
+
+.fb_like {
+  margin-top: 15px;
+}
