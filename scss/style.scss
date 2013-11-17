@@ -54,7 +54,8 @@ a {
   $color : #0af;
   color: $color;
   outline: none;
-  cursor: pointer;
+  // cursor: pointer;
+  text-decoration: none;
 
   &:link {
     color: scale_color( $color, $lightness: 50% );
@@ -104,12 +105,23 @@ header {
   }
 
   .logo {
-    display: block;
-    width: 88px;
+    display: inline-block;
+    // display: block;
+    // width: 88px;
+    padding: 0 13px;
+    // padding: 0 0.2em;
     height: 28px;
-    background-position: 0 0;
+    text-align: center;
+    @include opacity(0.5);
+    font-size: 9px;
+
+
+    // background-position: 0 0;
     &:hover {
-      background-position: -88px 0;
+    @include opacity(1);
+      background: #000;
+
+      // background-position: -88px 0;
     }
   }
 }
@@ -123,12 +135,19 @@ header {
     float: left;
   }
   .save {
-    display: block;
-    width: 88px;
+    display: inline-block;
+    // width: 88px;
+    padding: 0 13px;
+
     height: 28px;
-    background-position: 0 -28px;
+    font-size: 9px;
+    text-align: center;
+    @include opacity(0.5);
+    // background-position: 0 -28px;
     &:hover {
-      background-position: -88px -28px;
+      // background-position: -88px -28px;
+    @include opacity(1);
+      background: #000;
     }
   }
 }

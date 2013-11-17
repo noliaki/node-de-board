@@ -1,4 +1,4 @@
-@charset "UTF-8";
+@charset "utf-8";
 /*----------------------------------------------------
 
   reset
@@ -85,7 +85,7 @@ input, textarea {
 a {
   color: #00aaff;
   outline: none;
-  cursor: pointer; }
+  text-decoration: none; }
   a:link {
     color: #80d4ff; }
   a:visited {
@@ -122,12 +122,17 @@ header {
   header h1 {
     float: left; }
   header .logo {
-    display: block;
-    width: 88px;
+    display: inline-block;
+    padding: 0 13px;
     height: 28px;
-    background-position: 0 0; }
+    text-align: center;
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=50);
+    opacity: 0.5;
+    font-size: 9px; }
     header .logo:hover {
-      background-position: -88px 0; }
+      filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+      opacity: 1;
+      background: #000; }
 
 #menu {
   float: left; }
@@ -137,12 +142,17 @@ header {
   #menu li {
     float: left; }
   #menu .save {
-    display: block;
-    width: 88px;
+    display: inline-block;
+    padding: 0 13px;
     height: 28px;
-    background-position: 0 -28px; }
+    font-size: 9px;
+    text-align: center;
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=50);
+    opacity: 0.5; }
     #menu .save:hover {
-      background-position: -88px -28px; }
+      filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+      opacity: 1;
+      background: #000; }
 
 /* content
 ----------------------------------------------------*/
@@ -228,12 +238,10 @@ header {
   padding: 20px; }
   #main_field .social_wrap {
     overflow: hidden;
-    *zoom: 1;
-    margin-top: 15px; }
+    *zoom: 1; }
     #main_field .social_wrap .fb_like,
     #main_field .social_wrap .tweet_btn {
-      float: left;
-      margin-right: 15px; }
+      float: left; }
 
 #canvas_wrap {
   position: relative;
@@ -496,3 +504,6 @@ header {
     word-wrap: break-word; }
   #chat .name {
     font-weight: bold; }
+
+.fb_like {
+  margin-top: 15px; }
