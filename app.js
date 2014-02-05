@@ -1,6 +1,5 @@
 var
-  app = require('http').createServer().listen(8081),
-  io = require('socket.io').listen(app),
+  io = require('socket.io').listen(8081),
   fs = require('fs'),
 
   connectedUser = {},

@@ -270,10 +270,14 @@ header {
 
   .social_wrap {
     @include clearfix();
+    margin-top: 15px;
 
     .fb_like,
     .tweet_btn {
       float: left;
+    }
+    .fb_like {
+      margin-right: 15px;
     }
   }
 }
@@ -572,6 +576,3 @@ header {
   }
 }
 
-.fb_like {
-  margin-top: 15px;
-}

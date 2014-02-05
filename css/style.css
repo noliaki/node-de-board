@@ -238,10 +238,13 @@ header {
   padding: 20px; }
   #main_field .social_wrap {
     overflow: hidden;
-    *zoom: 1; }
+    *zoom: 1;
+    margin-top: 15px; }
     #main_field .social_wrap .fb_like,
     #main_field .social_wrap .tweet_btn {
       float: left; }
+    #main_field .social_wrap .fb_like {
+      margin-right: 15px; }
 
 #canvas_wrap {
   position: relative;
@@ -504,6 +507,3 @@ header {
     word-wrap: break-word; }
   #chat .name {
     font-weight: bold; }
-
-.fb_like {
-  margin-top: 15px; }

@@ -304,7 +304,8 @@ var
       this.$tools.on({
         "mouseenter": this.onToolEnter,
         "mouseleave": this.onToolLeave,
-        "tap click": this.onToolClick
+        "click": this.onToolClick,
+        "tap": this.onToolToggle
       });
 
       $( doc.getElementById("brush-range") )
@@ -316,6 +317,14 @@ var
       .on({
         "change": this.onEraserChange
       });
+    },
+
+    onToolToggle: function(event){
+      event.preventDefault();
+      $(this)
+      .children(".option")
+      .stop()
+      .toggle();
     },
 
     setCurrent: function( $target ) {
@@ -468,8 +477,10 @@ var
     onAreaDown: function(event) {
       event.preventDefault();
       var
-        exX = event.pageX - hitArea.offset.x,
-        exY = event.pageY - hitArea.offset.y;
+        mouseX = event.originalEvent.changedTouches? event.originalEvent.changedTouches[0].pageX : event.pageX,
+        mouseY = event.originalEvent.changedTouches? event.originalEvent.changedTouches[0].pageY : event.pageY,
+        exX = mouseX - hitArea.offset.x,
+        exY = mouseY - hitArea.offset.y;
 
       artist.downMouse(exX, exY);
 
@@ -485,8 +496,11 @@ var
 
     onAreaMove: function(event) {
       event.preventDefault();
+      var
+        mouseX = event.originalEvent.changedTouches? event.originalEvent.changedTouches[0].pageX : event.pageX,
+        mouseY = event.originalEvent.changedTouches? event.originalEvent.changedTouches[0].pageY : event.pageY;
 
-      artist.action(event.pageX, event.pageY);
+      artist.action(mouseX, mouseY);
 
       // name.move( "name_" + artist.name );
 
@@ -514,21 +528,27 @@ var
 
     onAreaEnter: function(event) {
       event.preventDefault();
-      artist.mouseX = artist.exMouseX = event.pageX - hitArea.offset.x;
-      artist.mouseY = artist.exMouseY = event.pageY - hitArea.offset.y;
+      var
+        mouseX = event.originalEvent.changedTouches? event.originalEvent.changedTouches[0].pageX : event.pageX,
+        mouseY = event.originalEvent.changedTouches? event.originalEvent.changedTouches[0].pageY : event.pageY;
+      artist.mouseX = artist.exMouseX = mouseX - hitArea.offset.x;
+      artist.mouseY = artist.exMouseY = mouseY - hitArea.offset.y;
 
     },
 
     onAreaLeave: function(event) {
       event.preventDefault();
+      var
+        mouseX = event.originalEvent.changedTouches? event.originalEvent.changedTouches[0].pageX : event.pageX,
+        mouseY = event.originalEvent.changedTouches? event.originalEvent.changedTouches[0].pageY : event.pageY;
 
       // artist.upMouse();
       if( artist.tool === 1 && txtField.active) {
         txtField.endTextArea();
       }
 
-      artist.mouseX = artist.exMouseX = event.pageX - hitArea.offset.x;
-      artist.mouseY = artist.exMouseY = event.pageY - hitArea.offset.y;
+      artist.mouseX = artist.exMouseX = mouseX - hitArea.offset.x;
+      artist.mouseY = artist.exMouseY = mouseY - hitArea.offset.y;
 
       extent.clear();
     }
