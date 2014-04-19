@@ -567,14 +567,14 @@ var
     sendTxtBtn: (function(){
       var btn = doc.createElement("div");
       btn.setAttribute("class", "send_txt");
-      btn.innerHTML = "決&nbsp;定";
+      btn.innerHTML = "O&nbsp;K";
       return btn;
     }()),
 
     cancelTxtBtn: (function(){
       var btn = doc.createElement("div");
       btn.setAttribute("class", "send_cancel");
-      btn.innerHTML = "キャンセル";
+      btn.innerHTML = "cancel";
       return btn;
     }()),
 
@@ -956,6 +956,8 @@ var
       this.$header = this.$chatBox.find(".chat_header");
       this.$inner = this.$commentBox.find(".comment_inner");
 
+      this.keycode = 0;
+
       this.$header
       .on({
         "tap click": this.toggleShow
@@ -963,18 +965,27 @@ var
 
       this.$textarea
       .on({
-        "keyup": this.checkKey
+        "keyup": this.checkKey,
+        "keydown": this.keepCode
       });
+    },
+
+    keepCode: function(event){
+      chat.keycode = event.keyCode;
     },
 
     checkKey: function(event){
       event.preventDefault();
-      if( chat.$textarea.val() === "\n" ){
+
+      var value = chat.$textarea.val();
+
+      if( value === "\n" ){
         chat.$textarea.val("");
       }
-      if( event.keyCode === 13 && chat.$textarea.val() !== "" ){
+      if( event.keyCode === 13 && event.keyCode === chat.keycode && value !== "" ){
         chat.sendMessage();
       }
+
     },
 
     toggleShow: function(event){
