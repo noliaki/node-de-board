@@ -54,8 +54,7 @@ a {
   $color : #0af;
   color: $color;
   outline: none;
-  // cursor: pointer;
-  text-decoration: none;
+  cursor: pointer;
 
   &:link {
     color: scale_color( $color, $lightness: 50% );
@@ -105,23 +104,12 @@ header {
   }
 
   .logo {
-    display: inline-block;
-    // display: block;
-    // width: 88px;
-    padding: 0 13px;
-    // padding: 0 0.2em;
+    display: block;
+    width: 88px;
     height: 28px;
-    text-align: center;
-    @include opacity(0.5);
-    font-size: 9px;
-
-
-    // background-position: 0 0;
+    background-position: 0 0;
     &:hover {
-    @include opacity(1);
-      background: #000;
-
-      // background-position: -88px 0;
+      background-position: -88px 0;
     }
   }
 }
@@ -135,19 +123,12 @@ header {
     float: left;
   }
   .save {
-    display: inline-block;
-    // width: 88px;
-    padding: 0 13px;
-
+    display: block;
+    width: 88px;
     height: 28px;
-    font-size: 9px;
-    text-align: center;
-    @include opacity(0.5);
-    // background-position: 0 -28px;
+    background-position: 0 -28px;
     &:hover {
-      // background-position: -88px -28px;
-    @include opacity(1);
-      background: #000;
+      background-position: -88px -28px;
     }
   }
 }
@@ -270,14 +251,10 @@ header {
 
   .social_wrap {
     @include clearfix();
-    margin-top: 15px;
 
     .fb_like,
     .tweet_btn {
       float: left;
-    }
-    .fb_like {
-      margin-right: 15px;
     }
   }
 }
@@ -576,3 +553,6 @@ header {
   }
 }
 
+.fb_like {
+  margin-top: 15px;
+}
