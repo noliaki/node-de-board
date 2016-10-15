@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>node&nbsp;de&nbsp;board</title>
+<meta name="description" content="white board that anyone can draw with anyone. this is made of node.js. if you are alone, invite anyone!">
+<meta name="keywords" content="html5,node.js,javascript,websocket,canvas,nginx">
+<meta name="author" content="noriaki.yamada">
+<meta name="copyright" content="&copy; 2013 renoat.net">
+<meta property="og:title" content="node&nbsp;de&nbsp;board">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="node&nbsp;de&nbsp;board">
+<meta property="og:url" content="//board.renoat.net/">
+<meta property="og:image" content="//board.renoat.net/fb.png">
+<meta property="og:description" content="white board that anyone can draw with anyone. this is made of node.js. if you are alone, invite anyone!">
+<link rel="shortcut icon" href="favicon.ico">
+<link rel="index" href="/">
+<link rel="stylesheet" href="css/spectrum.css">
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdn.mlkcca.com/v0.6.0/milkcocoa.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+
+<script src="js/spectrum.js"></script>
+<script src="js/node-de-board.js"></script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-45803610-3', 'renoat.net');
+  ga('send', 'pageview');
+</script>
+</head>
+<body id="board-renoat-net">
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=180677648763242";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+<div id="overlay"></div>
+<!-- /#overlay -->
+
+<div id="login">
+  <div id="input_name">
+    <input type="text" name="name" id="artist_name" value="input your name">
+    <span class="name_available"></span>
+    <p class="notice">please input at least 3 characters</p>
+  </div>
+  <!-- /#input_name -->
+  <a href="#deside" id="deside_name" class="disabled">O&nbsp;K</a>
+</div>
+<!-- /#login -->
+<header>
+  <h1><a href="/" class="logo">node de board</a></h1>
+  <nav id="menu">
+    <ul>
+      <li><a href="/" class="save">save image</a></li>
+    </ul>
+  <!-- /#menu --></nav>
+</header>
+<div id="content">
+  <div id="main_field">
+    <div id="canvas_wrap">
+      <canvas id="board"></canvas>
+      <canvas id="extent"></canvas>
+      <div id="name_field"></div>
+      <div id="txt_field"></div>
+      <canvas id="hit_area"></canvas>
+    <!-- /#canvas_wrap --></div>
+    <div class="social_wrap">
+      <div class="fb_like">
+        <div class="fb-like" data-href="http://board.renoat.net" data-send="false" data-layout="button_count" data-width="120" data-show-faces="true"></div>
+      <!-- /.fb_like --></div>
+      <div class="tweet_btn">
+        <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://board.renoat.net" data-via="noliaki" data-lang="us">tweet</a>
+        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+      <!-- /.tweet_btn --></div>
+    <!-- /.social_wrap --></div>
+  <!-- /#main_field --></div>
+  <aside id="tools">
+    <ul class="tool_list">
+      <li id="brush" class="current">
+        <a class="sprite" title="Brush">Brush</a>
+        <div class="option">
+          <input type="range" namge="brush-width" id="brush-range" max="50" min="1" value="1">
+          <p class="option_num">Brush's width：<span id="brush_width">1</span></p>
+        <!-- /.option --></div>
+      </li>
+      <li id="txt">
+        <a class="sprite" title="Text">Text</a>
+      </li>
+      <li id="eraser">
+        <a class="sprite" title="Eraser">Eraser</a>
+        <div class="option">
+          <input type="range" namge="eraser-width" id="eraser-range" max="50" min="1" value="1">
+          <p class="option_num">Eraser's width：<span id="eraser_width">1</span></p>
+        <!-- /.option --></div>
+      </li>
+    <!-- /.tool_list --></ul>
+    <div id="color_pallet">
+      <span class="tool_name">color</span>
+      <div class="color_wrap">
+        <a id="current_color" class="sprite" title="color"></a>
+
+        <div class="option">
+          <input type="text" id="custom">
+        <!-- /.option --></div>
+      <!-- /.color_wrap --></div>
+
+    <!-- /#color_pallet --></div>
+  <!-- /#tools --></aside>
+<!-- /#content --></div>
+
+<div id="chat" class="">
+  <div class="chat_header">
+    chat
+  <!-- /.chat_header --></div>
+
+  <div class="chat_content">
+    <div class="comment_box">
+    <div class="comment_inner">
+    <!-- /.comment_inner --></div>
+    <!-- /.comment_box --></div>
+
+    <textarea name="" id="" class="chat_txt"></textarea>
+  </div>
+  <!-- /#chat_content -->
+</div>
+<!-- /#chat -->
+</body>
+</html>
