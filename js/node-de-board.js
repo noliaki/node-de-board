@@ -1,5 +1,9 @@
 ;(function(window, $){
 "use strict";
+var milkcocoa = new MilkCocoa('iceiub6malo.mlkcca.com');
+var ds = milkcocoa.dataStore('node-de-board');
+
+
 var
   doc = window.document,
 
@@ -21,7 +25,7 @@ var
 
   // ========================================================
   // login
-  // 
+  //
   login = {
 
     $container: null,
@@ -103,33 +107,73 @@ var
 
   // ========================================================
   // websocket
-  // 
+  //
   socket = {
     domain: "board.renoat.net",
     port: 8081,
     webSocket: null,
 
     init: function() {
-      this.webSocket = io.connect("//" + this.domain + ":" + this.port);
+      // this.webSocket = io.connect("//" + this.domain + ":" + this.port);
+      //
+      // this.webSocket.on("connect", this.onConnect);
+      //
+      // this.webSocket.on('connect_failed', function (response) {
+      //   alert( "Sorry, The connection to the server failed." );
+      // });
 
-      this.webSocket.on("connect", this.onConnect);
+      var self = socket
 
-      this.webSocket.on('connect_failed', function (response) {
-        alert( "Sorry, The connection to the server failed." );
-      });
+      ds.on('send', function (data) {
+        console.log('run')
+        switch (data.value.type) {
+          case 'drawCircle' :
+            socket.onDrawCircle (data.value)
+            break
+          case 'drawLine' :
+            socket.onDrawLine (data.value)
+            break
+          case 'inputText' :
+            socket.onInputText (data.value)
+            break
+          case 'mousemove' :
+            socket.onMouseMove (data.value)
+            break
+          case 'setData' :
+            socket.onSetData (data.value)
+            break
+          case 'checkName' :
+            socket.onCheckName (data.value)
+            break
+          case 'addUser' :
+            socket.onAddUser (data.value)
+            break
+          case 'disConnect' :
+            socket.onDisConnect (data.value)
+            break
+          case 'setImageData' :
+            socket.onSetImageData (data.value)
+            break
+          case 'chat' :
+            socket.onChat (data.value)
+            break
+        }
 
-      this.webSocket.on("drawCircle", this.onDrawCircle);
-      this.webSocket.on("drawLine", this.onDrawLine);
+      })
+      socket.onConnect()
 
-      this.webSocket.on("inputText", this.onInputText);
-      this.webSocket.on("mousemove", this.onMouseMove);
-      // this.webSocket.on("comment", this.onComment);
-      this.webSocket.on("setData", this.onSetData);
-      this.webSocket.on("checkName", this.onCheckName);
-      this.webSocket.on("addUser", this.onAddUser);
-      this.webSocket.on("disConnect", this.onDisConnect);
-      this.webSocket.on("setImageData", this.onSetImageData);
-      this.webSocket.on("chat", this.onChat);
+      // ds.on("drawCircle", this.onDrawCircle);
+      // ds.on("drawLine", this.onDrawLine);
+      //
+      // ds.on("inputText", this.onInputText);
+      // ds.on("mousemove", this.onMouseMove);
+      // // ds.on("comment", this.onComment);
+      // ds.on("setData", this.onSetData);
+      // ds.on("checkName", this.onCheckName);
+      // ds.on("addUser", this.onAddUser);
+      // ds.on("disConnect", this.onDisConnect);
+      // ds.on("setImageData", this.onSetImageData);
+      // ds.on("chat", this.onChat);
 
     },
 
@@ -148,6 +192,8 @@ var
     },
 
     onConnect: function( response ) {
+
+      console.log('run')
 
       canvasWrap.init();
 
@@ -182,7 +228,7 @@ var
     },
 
     onInputText: function( response ) {
-      canvas.inputText( response );
+      canvas.inputText( response.txtData );
     },
     onMouseMove: function( response ) {
       name.move( response );
@@ -192,12 +238,12 @@ var
     },
 
     onAddUser: function( response ) {
-      name.addName(response);
+      name.addName(response.name);
     },
 
     // check name
     onCheckName: function( response ){
-      login.nameAvailable( response );
+      login.nameAvailable( response.name );
     },
 
     onDisConnect: function( response ){
@@ -205,25 +251,32 @@ var
     },
 
     onChat: function( response ){
-      chat.getMessage(response);
+      chat.getMessage(response.data);
     },
 
 
     // ---------------------
     // emit
-    // 
+    //
     checkName: function( name ){
-      this.webSocket.emit("checkName", name);
+      ds.send({
+        type: "checkName",
+        name: name
+      });
     },
 
     desideName: function(desidedName){
-      this.webSocket.emit("addUser", desidedName);
+      ds.send({
+        type: "addUser",
+        name: desidedName
+      });
       artist.setName(desidedName);
       login.fadeOut();
     },
 
     drawCircle: function(){
-      this.webSocket.emit("drawCircle", {
+      ds.send({
+        "type": "drawCircle",
         "x": artist.exMouseX,
         "y": artist.exMouseY,
         "width": artist.tool === 0? artist.brushWidth : artist.eraserWidth,
@@ -232,7 +285,8 @@ var
     },
 
     drawLine: function( eraser ){
-      this.webSocket.emit("drawLine", {
+      ds.send({
+        "type": "drawLine",
         "exMouseX": artist.exMouseX,
         "exMouseY": artist.exMouseY,
         "mouseX": artist.mouseX,
@@ -244,7 +298,8 @@ var
     },
 
     mousemove: function(){
-      this.webSocket.emit("mousemove", {
+      ds.send({
+        "type": "mousemove",
         "name": artist.name,
         "x": artist.mouseX,
         "y": artist.mouseY
@@ -252,22 +307,28 @@ var
     },
 
     inputText: function( txtData ){
-      this.webSocket.emit("inputText", txtData);
+      ds.send({
+        type: "inputText",
+        txtData: txtData
+      });
     },
 
     saveImage: function(){
       // console.log( canvas.getImageData().data );
-      // this.webSocket.emit("saveImage", canvas.dataURL());
+      // ds.send("saveImage", canvas.dataURL());
     },
 
     chat: function( data ){
-      this.webSocket.emit("chat", data);
+      ds.send({
+        type: "chat",
+        data: data
+      });
     }
   },
 
   // ========================================================
   // timer : TODO
-  // 
+  //
   timer = {
     id: null,
     interval: 1000,
@@ -286,7 +347,7 @@ var
 
   // ========================================================
   // tool
-  // 
+  //
   tool = {
     $tools: null,
     toolNum: 0,
@@ -337,7 +398,7 @@ var
 
     // --------------------------------------
     // tool | mouse event
-    // 
+    //
     onToolEnter: function(event) {
       event.preventDefault();
       $(this)
@@ -376,7 +437,7 @@ var
 
   // ========================================================
   // canvas_wrap
-  // 
+  //
   canvasWrap = {
     $field: null,
 
@@ -398,7 +459,7 @@ var
 
   // ========================================================
   // name_field
-  // 
+  //
   name = {
     $nameField: null,
     userNames: {},
@@ -451,7 +512,7 @@ var
 
   // ========================================================
   // hitArea
-  // 
+  //
   hitArea = {
     $sensor: null,
     offset: {
@@ -491,7 +552,7 @@ var
       }
 
       // timer.stop();
-      
+
     },
 
     onAreaMove: function(event) {
@@ -556,7 +617,7 @@ var
 
   // ========================================================
   // txt_field
-  // 
+  //
   txtField = {
     $field: null,
     focusInput: null,
@@ -619,7 +680,7 @@ var
       } else {
         this.focusInput.style.top = artist.firstY + "px";
       }
-      
+
     },
 
     endTextArea: function(){
@@ -779,7 +840,7 @@ var
 
   // ========================================================
   // extent
-  // 
+  //
   extent = {
     canvas: null,
     context: null,
@@ -808,7 +869,7 @@ var
 
   // ========================================================
   // canvas
-  // 
+  //
   canvas = {
     txtField: null,
     canvasWrap: null,
@@ -829,7 +890,7 @@ var
 
     drawSelfData: function(){
       this.context.drawImage( this.board, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT );
-      this.context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);      
+      this.context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     },
 
     drawData: function( data ){
@@ -921,7 +982,7 @@ var
 
   // ========================================================
   // chat
-  // 
+  //
   chat = {
     $chatBox: null,
     $textarea: null,
@@ -1044,7 +1105,7 @@ var
 
   // ========================================================
   // artist
-  // 
+  //
   artist = {
     name: "test_user",
     sessionId: 0,
@@ -1126,7 +1187,7 @@ var
 
   // ========================================================
   // init
-  // 
+  //
   init = function() {
 
     $("#menu .save")
@@ -1138,13 +1199,13 @@ var
     });
 
     $overlay = $("#overlay");
-    
+
     socket.init();
   };
 
   // ========================================================
   // document.ready
-  // 
+  //
   $(function() {
     init();
   });
