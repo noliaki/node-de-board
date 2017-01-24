@@ -1,6 +1,6 @@
 ;(function(window, $){
 "use strict";
-var milkcocoa = new MilkCocoa('iceiul7ul3d.mlkcca.com');
+var milkcocoa = new MilkCocoa('iceiub6malo.mlkcca.com');
 var ds = milkcocoa.dataStore('node-de-board');
 
 
